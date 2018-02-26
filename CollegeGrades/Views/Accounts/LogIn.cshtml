@@ -1,0 +1,49 @@
+﻿@model CollegeGrades.Models.AccountViewModels.LogInViewModel
+
+@{
+    ViewData["Title"] = "Log In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-header header-filter padding-top-2" id="full-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="card card-signup">
+                    <form class="form" method="post">
+                        <div class="card-header card-header-primary text-center margin-bottom-2">
+                            <h4 class="card-title">@ViewData["Title"]</h4>
+                            <div class="social-line">
+                                <a href="#pablo" class="btn btn-just-icon btn-link">
+                                    <i class="fa fa-facebook-square"></i>
+                                </a>
+                                <a href="#pablo" class="btn btn-just-icon btn-link">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                                <a href="#pablo" class="btn btn-just-icon btn-link">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="description text-center">or be classical</p>
+                        <div class="card-body">
+                            <label asp-for="Email">Email</label>
+                            <input asp-for="Email" type="text" class="form-control">
+                            <span asp-validation-for="Email" class="form-text text-danger margin-bottom-2"></span>
+
+                            <label asp-for="Password">Password</label>
+                            <input asp-for="Password" type="password" class="form-control">
+                            <span asp-validation-for="Password" class="form-text text-danger margin-bottom-2"></span>
+
+                        </div>
+                        <div class="footer text-center margin-bottom-2">
+                            <button type="submit" class="btn btn-primary btn-wd btn-lg">LOG IN</button>
+                            <a asp-action="register" class="btn btn-primary btn-link btn-wd btn-lg">REGISTER</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
