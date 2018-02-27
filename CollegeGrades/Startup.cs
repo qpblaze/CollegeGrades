@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using AutoMapper;
+using CollegeGrades.Infrastructure.Data;
+using CollegeGrades.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace CollegeGrades
 {
@@ -32,17 +35,19 @@ namespace CollegeGrades
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CollegeGrades")));
 
-            services.AddAuthentication(options =>
+            services.AddDbContext<AppIdentityDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("CollegeGrades")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<AppIdentityDbContext>()
+               .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
             {
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
-            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
                 options.LoginPath = "/login";
                 options.LogoutPath = "/logout";
-                options.AccessDeniedPath = "/login";
-                options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
             //Add the secrets
@@ -86,6 +91,7 @@ namespace CollegeGrades
             app.UseXContentTypeOptions();
 
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
         }
     }

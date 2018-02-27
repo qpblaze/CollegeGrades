@@ -1,97 +1,98 @@
-﻿using AutoMapper;
-using CollegeGrades.Data;
-using CollegeGrades.Models;
-using CollegeGrades.Models.AccountViewModels;
-using CollegeGrades.Repositories;
+﻿using CollegeGrades.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CollegeGrades.Controllers
 {
+    [Authorize]
     public class AccountsController : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly UnitOfWork _unitOfWork;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountsController(IMapper mapper, ApplicationDbContext context, IOptions<AppSecrets> options)
+        public AccountsController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
-            _mapper = mapper;
-            _unitOfWork = new UnitOfWork(context, options);
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         [Route("login")]
-        public IActionResult LogIn()
+        public async Task<IActionResult> LogIn(string returnUrl = null)
         {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            ViewData["ReturnUrl"] = returnUrl;
+            if (!String.IsNullOrEmpty(returnUrl) &&
+                returnUrl.IndexOf("checkout", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                ViewData["ReturnUrl"] = "/Basket/Index";
+            }
+
             return View();
         }
 
-        [Route("login")]
         [HttpPost]
-        public async Task<IActionResult> LogInAsync(LogInViewModel model)
+        [AllowAnonymous]
+        [Route("login")]
+        public async Task<IActionResult> LogIn(LogInViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            Account account = _mapper.Map<LogInViewModel, Account>(model);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            try
-            {
-                account = _unitOfWork.Accounts.LogIn(account);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("Email", ex.Message);
-                return View(model);
-            }
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
 
-            // Set the claims we need and add login the user
-            var claims = new List<Claim>
-            {
-                new Claim("FullName", account.FirstName + " " + account.LastName),
-                new Claim("ID", account.ID),
-                new Claim("Email", account.Email),
-                new Claim("ProfileImage", account.ProfileImage),
-            };
+            if (result.Succeeded)
+                return RedirectToAction(nameof(LogIn));
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
-            return RedirectToAction("Index", "Home");
+            return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction(nameof(LogIn));
+        }
+
+        [AllowAnonymous]
         [Route("register")]
         public IActionResult Register()
         {
             return View();
         }
 
-        [Route("register")]
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        [AllowAnonymous]
+        [Route("register")]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            Account account = _mapper.Map<RegisterViewModel, Account>(model);
-            try
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
             {
-                await _unitOfWork.Accounts.RegisterAccountAsync(account);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("Email", ex.Message);
-                return View(model);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction(nameof(LogIn));
             }
 
-            await _unitOfWork.CompletedAsync();
-
-            return RedirectToAction(nameof(LogIn));
+            return View();
         }
     }
 }

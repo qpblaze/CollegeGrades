@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CollegeGrades.Models;
+using CollegeGrades.Core.Entities;
 using CollegeGrades.Models.AccountViewModels;
 
 namespace CollegeGrades.Data

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollegeGrades", "CollegeGrades\CollegeGrades.csproj", "{10AC93B9-4C86-42E8-B8DC-B7A1230217A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollegeGrades.Web", "CollegeGrades\CollegeGrades.Web.csproj", "{10AC93B9-4C86-42E8-B8DC-B7A1230217A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollegeGrades.Core", "CollegeGrades.Core\CollegeGrades.Core.csproj", "{45344700-1479-449E-AD45-3A18CF33456D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollegeGrades.Infrastructure", "CollegeGrades.Infrastructure\CollegeGrades.Infrastructure.csproj", "{F83EE074-4965-4792-9504-423B04E5EBEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{10AC93B9-4C86-42E8-B8DC-B7A1230217A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10AC93B9-4C86-42E8-B8DC-B7A1230217A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10AC93B9-4C86-42E8-B8DC-B7A1230217A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45344700-1479-449E-AD45-3A18CF33456D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45344700-1479-449E-AD45-3A18CF33456D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45344700-1479-449E-AD45-3A18CF33456D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45344700-1479-449E-AD45-3A18CF33456D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F83EE074-4965-4792-9504-423B04E5EBEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83EE074-4965-4792-9504-423B04E5EBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83EE074-4965-4792-9504-423B04E5EBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83EE074-4965-4792-9504-423B04E5EBEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
