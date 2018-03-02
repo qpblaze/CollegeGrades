@@ -7,7 +7,7 @@ namespace CollegeGrades.Infrastructure.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly string _apiKey;
+        private readonly string _apiKey = "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";
 
         private const string EMAIL = "college.grades@ursaciuc.me";
         private const string NAME = "College Grades";

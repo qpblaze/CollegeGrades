@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="text-center">
+        <h1 class="margin-bottom-2">Index</h1>
+        <h3>Welcome @User.Identity.Name</h3>
+        <form method="post" asp-action="LogOut" asp-controller="Account">
+
+            <button type="submit" class="btn btn-primary">Log Out</button>
+        </form>
+    </div>
+
+</div>

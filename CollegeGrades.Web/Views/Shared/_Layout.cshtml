@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link href="~/lib/material-kit-master/assets/scss/material-kit.min.css" rel="stylesheet" />
+    <link href="~/css/style.min.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <!-- Navbar -->
+    @if(Html.ShouldDisplayNav())
+    {
+        @Html.Partial("_NavigationMenu.cshtml")
+    }
+    
+    <!-- Body -->
+    @RenderBody()
+    
+
+    <!-- Scripts -->
+    <script src="~/lib/jQuery/dist/jquery.min.js"></script>
+    <script src="~/lib/popper.js/dist/popper.min.js"></script>
+    <script src="~/lib/material-kit-master/assets/js/bootstrap-material-design.min.js"></script>
+</body>
+</html>

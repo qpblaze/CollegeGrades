@@ -5,7 +5,7 @@ namespace CollegeGrades.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IAccountService Accounts { get; }
+        //IAccountService Accounts { get; }
 
         Task CompletedAsync();
     }

@@ -21,7 +21,7 @@ namespace CollegeGrades.Core.Entities
         public string CycleID { get; set; }
 
         [ForeignKey(nameof(AccountID))]
-        public virtual Account Account { get; set; }
+        public virtual User Account { get; set; }
 
         [ForeignKey(nameof(SubjectID))]
         public virtual Subject Subject { get; set; }

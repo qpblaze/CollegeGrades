@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Email Confirmation";
+}
+
+<div class="page-header header-filter padding-top-2" id="full-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="card card-signup">
+                    <div class="card-header card-header-primary text-center margin-bottom-2">
+                        <h4 class="card-title">@ViewData["Title"]</h4>
+                        <div class="social-line">
+                            <span class="btn btn-just-icon btn-link">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+
+                            <h3 class="margin-bottom-1 card-title"><b>Your email was confirmed!</b></h3>
+                            <h5 class="description">You can log in now.</h5>
+                        </div>
+                    </div>
+                    <div class="footer text-center margin-bottom-2">
+                        <a asp-action="LogIn" asp-controller="Account" class="btn btn-primary btn-wd btn-lg">LOG IN</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
