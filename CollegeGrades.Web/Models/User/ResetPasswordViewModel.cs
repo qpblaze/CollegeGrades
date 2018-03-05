@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CollegeGrades.Models.AccountViewModels
+namespace CollegeGrades.Web.Models.User
 {
     public class ResetPasswordViewModel
     {

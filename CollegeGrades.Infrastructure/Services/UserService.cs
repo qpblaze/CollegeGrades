@@ -38,7 +38,16 @@ namespace CollegeGrades.Infrastructure.Services
             return "http://www.gravatar.com/avatar/" + Guid.NewGuid().ToString().Replace('-', '0') + "?&default=identicon&forcedefault=1&s=300";
         }
 
-        private async Task AddToRoleAsync(User user, string name)
+        #endregion Private Methods
+
+        #region Public Methods
+
+        public async Task<User> FindByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
+
+        public async Task AddToRoleAsync(User user, string name)
         {
             bool exists = await _roleRepository.RoleExistsAsync(name);
             if (!exists)
@@ -47,25 +56,17 @@ namespace CollegeGrades.Infrastructure.Services
             await _userManager.AddToRoleAsync(user, name);
         }
 
-        #endregion Private Methods
-
-        public async Task RegisterAsync(User user, string password)
+        public async Task CreateAsync(User user)
         {
-            // Default properties
             user.ProfileImage = GetProfileImageURL();
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, user.Password);
             if (!result.Succeeded)
             {
                 throw new InvalidInputException(result.Errors.ToString());
             }
 
             await AddToRoleAsync(user, "Student");
-        }
-
-        public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
-        {
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
         public async Task SignInAsync(string email, string password)
@@ -82,9 +83,14 @@ namespace CollegeGrades.Infrastructure.Services
             }
         }
 
-        public async Task<User> FindByIdAsync(string id)
+        public async Task SignOutAsync()
         {
-            return await _userManager.FindByIdAsync(id);
+            await _signInManager.SignOutAsync();
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
         public async Task ConfirmEmailAsync(string userID, string code)
@@ -102,11 +108,8 @@ namespace CollegeGrades.Infrastructure.Services
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
-        }
+        } 
 
-        public async Task SignOutAsync()
-        {
-            await _signInManager.SignOutAsync();
-        }
+        #endregion
     }
 }

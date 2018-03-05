@@ -6,7 +6,7 @@ using CollegeGrades.Infrastructure.Data;
 using CollegeGrades.Infrastructure.Identity;
 using CollegeGrades.Infrastructure.Repository;
 using CollegeGrades.Infrastructure.Services;
-using CollegeGrades.Infrastructure.Services.Messaging;
+using CollegeGrades.Web.Attributes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -67,7 +67,7 @@ namespace CollegeGrades
 
             services.AddAutoMapper();
 
-            services.AddTransient<IEmailSender, SendGridEmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserService, UserService>();
 
@@ -75,6 +75,7 @@ namespace CollegeGrades
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add(new RequireHttpsAttribute());
+                options.Filters.Add(typeof(ValidateModelStateAttribute));
             });
         }
 

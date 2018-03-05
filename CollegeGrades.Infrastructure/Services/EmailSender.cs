@@ -5,15 +5,15 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Threading.Tasks;
 
-namespace CollegeGrades.Infrastructure.Services.Messaging
+namespace CollegeGrades.Infrastructure.Services
 {
-    public class SendGridEmailSender : IEmailSender
+    public class EmailSender : IEmailSender
     {
         private readonly string API_KEY;
         private readonly string EMAIL;
         private readonly string NAME;
 
-        public SendGridEmailSender(IOptions<AppSecrets> options)
+        public EmailSender(IOptions<AppSecrets> options)
         {
             API_KEY = options.Value.SendGrid.ApiKey;
             EMAIL = options.Value.SendGrid.Email;

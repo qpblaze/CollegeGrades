@@ -2,30 +2,26 @@
 using CollegeGrades.Core.Entities;
 using CollegeGrades.Core.Exceptions;
 using CollegeGrades.Core.Interfaces;
-using CollegeGrades.Infrastructure.Repository;
-using CollegeGrades.Infrastructure.Services;
-using CollegeGrades.Models.AccountViewModels;
 using CollegeGrades.Web.Attributes;
 using CollegeGrades.Web.Extensions;
 using CollegeGrades.Web.Models.User;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace CollegeGrades.Controllers
+namespace CollegeGrades.Web.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        #region Privete Properties
+        #region Private Properties
 
         private readonly IUserService _userService;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
 
-        #endregion Privete Properties
+        #endregion Private Properties
 
         #region Constructor
 
@@ -40,18 +36,6 @@ namespace CollegeGrades.Controllers
         }
 
         #endregion Constructor
-
-        #region Private Methods
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-        }
-
-        #endregion Private Methods
 
         #region Register
 
@@ -70,14 +54,11 @@ namespace CollegeGrades.Controllers
         [RedirectLoggedUser]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
             User user = _mapper.Map<RegisterViewModel, User>(model);
 
             try
             {
-                await _userService.RegisterAsync(user, model.Password);
+                await _userService.CreateAsync(user);
             }
             catch (InvalidInputException ex)
             {
@@ -85,7 +66,15 @@ namespace CollegeGrades.Controllers
                 return View(model);
             }
 
-            await SendConfirmationEmail(user);
+            try
+            {
+                await SendConfirmationEmail(user);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("Email", "An error occured while sending the confirmation email.");
+                return View(model);
+            }
 
             return RedirectToAction(nameof(ConfirmationEmailSent));
         }
@@ -117,9 +106,6 @@ namespace CollegeGrades.Controllers
         [RedirectLoggedUser]
         public async Task<IActionResult> LogIn(LogInViewModel model, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
             try
             {
                 await _userService.SignInAsync(model.Email, model.Password);
@@ -206,7 +192,7 @@ namespace CollegeGrades.Controllers
             if (user == null)
                 return RedirectToAction(nameof(HomeController.Index), "Home");
 
-            return View(_mapper.Map<User, DisplayUserViewModel>(user));
+            return base.View(_mapper.Map<User, Web.Models.User.ProfileViewModel>(user));
         }
 
         #endregion Profile

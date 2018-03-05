@@ -1,6 +1,6 @@
-﻿namespace CollegeGrades.Models.AccountViewModels
+﻿namespace CollegeGrades.Web.Models.User
 {
-    public class DeleteAccountViewModel
+    public class DeleteUserViewModel
     {
         public string ID { get; set; }
         public string Email { get; set; }

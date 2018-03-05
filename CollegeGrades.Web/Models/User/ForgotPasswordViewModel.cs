@@ -1,15 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CollegeGrades.Models.AccountViewModels
+namespace CollegeGrades.Web.Models.User
 {
-    public class LogInViewModel
+    public class ForgotPasswordViewModel
     {
         [Required(ErrorMessage = "Please enter your email.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Please enter your password.")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
     }
 }

@@ -8,10 +8,11 @@ namespace CollegeGrades.Infrastructure.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
         
         public DbSet<Subject> Subjects { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<CollegeGrades.Core.Entities.Teacher> Teachers { get; set; }
         public DbSet<Cycle> Cycles { get; set; }
         public DbSet<Score> Scores { get; set; }
         public DbSet<AttendedSubject> AttendedSubjects { get; set; }

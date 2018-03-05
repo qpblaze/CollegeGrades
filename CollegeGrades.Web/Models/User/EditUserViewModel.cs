@@ -1,6 +1,6 @@
-﻿namespace CollegeGrades.Models.AccountViewModels
+﻿namespace CollegeGrades.Web.Models.User
 {
-    public class EditAccountViewModel
+    public class EditUserViewModel
     {
         //public EditAccountViewModel()
         //{

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CollegeGrades.Web.Attributes
 {
-    public class RedirectLoggedUser : ActionFilterAttribute
+    public class ValidateModelStateAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.User.Identity.IsAuthenticated)
+            if (!context.ModelState.IsValid)
             {
-                context.Result = new RedirectResult("/Home/Index");
+                context.Result = new BadRequestObjectResult(context.ModelState);
             }
         }
     }

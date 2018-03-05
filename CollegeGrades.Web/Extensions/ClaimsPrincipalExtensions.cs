@@ -12,5 +12,17 @@ namespace CollegeGrades.Web.Extensions
 
             return principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
+
+        public static string GetRole(this ClaimsPrincipal principal)
+        {
+            if (principal.IsInRole("Admin"))
+                return "Admin";
+            if (principal.IsInRole("Student"))
+                return "Student";
+            if (principal.IsInRole("Manager"))
+                return "Manager";
+
+            return "Unknown";
+        }
     }
 }

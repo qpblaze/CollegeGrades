@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CollegeGrades.Controllers
+namespace CollegeGrades.Web.Controllers
 {
     [Authorize]
     public class HomeController : Controller

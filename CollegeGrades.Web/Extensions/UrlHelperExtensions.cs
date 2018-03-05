@@ -1,4 +1,4 @@
-﻿using CollegeGrades.Controllers;
+﻿using CollegeGrades.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeGrades.Web.Extensions

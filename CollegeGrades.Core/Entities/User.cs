@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CollegeGrades.Core.Entities
 {
@@ -16,5 +17,8 @@ namespace CollegeGrades.Core.Entities
         public string LastName { get; set; }
         public string ProfileImage { get; set; }
         public string CoverImage { get; set; }
+
+        [NotMapped]
+        public string Password { get; set; }
     }
 }

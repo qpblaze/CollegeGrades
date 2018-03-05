@@ -4,6 +4,29 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-CollegeGrades-baf2c396-bd8e-4955-82ea-968ad14b2f40</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\AttendedSubject\**" />
+    <Compile Remove="Models\Cycle\**" />
+    <Compile Remove="Models\Score\**" />
+    <Compile Remove="Models\Subject\**" />
+    <Compile Remove="Models\Teacher\**" />
+    <Content Remove="Models\AttendedSubject\**" />
+    <Content Remove="Models\Cycle\**" />
+    <Content Remove="Models\Score\**" />
+    <Content Remove="Models\Subject\**" />
+    <Content Remove="Models\Teacher\**" />
+    <EmbeddedResource Remove="Models\AttendedSubject\**" />
+    <EmbeddedResource Remove="Models\Cycle\**" />
+    <EmbeddedResource Remove="Models\Score\**" />
+    <EmbeddedResource Remove="Models\Subject\**" />
+    <EmbeddedResource Remove="Models\Teacher\**" />
+    <None Remove="Models\AttendedSubject\**" />
+    <None Remove="Models\Cycle\**" />
+    <None Remove="Models\Score\**" />
+    <None Remove="Models\Subject\**" />
+    <None Remove="Models\Teacher\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
@@ -14,11 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\AttendedSubject\" />
-    <Folder Include="Models\Cycle\" />
-    <Folder Include="Models\Score\" />
-    <Folder Include="Models\Subject\" />
-    <Folder Include="Models\Teacher\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
