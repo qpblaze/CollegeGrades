@@ -1,20 +1,21 @@
-﻿using CollegeGrades.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using AutoMapper;
+using CollegeGrades.Core;
+using CollegeGrades.Core.Entities;
+using CollegeGrades.Core.Interfaces;
+using CollegeGrades.Infrastructure.Data;
+using CollegeGrades.Infrastructure.Identity;
+using CollegeGrades.Infrastructure.Repository;
+using CollegeGrades.Infrastructure.Services;
+using CollegeGrades.Infrastructure.Services.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using AutoMapper;
-using CollegeGrades.Infrastructure.Data;
-using CollegeGrades.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using CollegeGrades.Core.Entities;
-using CollegeGrades.Core.Interfaces;
-using CollegeGrades.Infrastructure.Services;
 
 namespace CollegeGrades
 {
@@ -22,15 +23,19 @@ namespace CollegeGrades
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            Configuration = new ConfigurationBuilder()
+                                    .SetBasePath(env.ContentRootPath)
+                                    .AddJsonFile("appsettings.json")
+                                    .AddJsonFile("secrets.json")
+                                    .AddUserSecrets<Startup>()
+                                    .AddEnvironmentVariables()
+                                    .Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CollegeGradesConnection")));
 
@@ -56,11 +61,15 @@ namespace CollegeGrades
             {
                 // SendGrid secrets
                 secrets.SendGrid.ApiKey = Configuration["SendGrid:api_key"];
+                secrets.SendGrid.Email = Configuration["SendGrid:email"];
+                secrets.SendGrid.Name = Configuration["SendGrid:name"];
             });
 
             services.AddAutoMapper();
 
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, SendGridEmailSender>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddMvc(options =>
             {

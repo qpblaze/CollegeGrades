@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CollegeGrades.Models.AccountViewModels
+namespace CollegeGrades.Web.Models.User
 {
     public class RegisterViewModel
     {

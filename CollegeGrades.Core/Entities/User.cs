@@ -11,5 +11,10 @@ namespace CollegeGrades.Core.Entities
         }
 
         public virtual ICollection<AttendedSubject> AttendedSubjects { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ProfileImage { get; set; }
+        public string CoverImage { get; set; }
     }
 }

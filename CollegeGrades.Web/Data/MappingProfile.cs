@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CollegeGrades.Core.Entities;
-using CollegeGrades.Models.AccountViewModels;
+using CollegeGrades.Web.Models.User;
 
 namespace CollegeGrades.Data
 {
@@ -8,8 +8,8 @@ namespace CollegeGrades.Data
     {
         public MappingProfile()
         {
-            //CreateMap<LogInViewModel, Account>();
-            //CreateMap<RegisterViewModel, Account>();
+            CreateMap<RegisterViewModel, User>();
+            CreateMap<User, DisplayUserViewModel>();
         }
     }
 }

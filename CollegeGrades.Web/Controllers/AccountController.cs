@@ -1,7 +1,13 @@
-﻿using CollegeGrades.Core.Entities;
+﻿using AutoMapper;
+using CollegeGrades.Core.Entities;
+using CollegeGrades.Core.Exceptions;
 using CollegeGrades.Core.Interfaces;
+using CollegeGrades.Infrastructure.Repository;
+using CollegeGrades.Infrastructure.Services;
 using CollegeGrades.Models.AccountViewModels;
+using CollegeGrades.Web.Attributes;
 using CollegeGrades.Web.Extensions;
+using CollegeGrades.Web.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,22 +21,22 @@ namespace CollegeGrades.Controllers
     {
         #region Privete Properties
 
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
         private readonly IEmailSender _emailSender;
+        private readonly IMapper _mapper;
 
         #endregion Privete Properties
 
         #region Constructor
 
         public AccountController(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            IEmailSender emailSender)
+            IUserService userService,
+            IEmailSender emailSender,
+            IMapper mapper)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _userService = userService;
             _emailSender = emailSender;
+            _mapper = mapper;
         }
 
         #endregion Constructor
@@ -52,6 +58,7 @@ namespace CollegeGrades.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("register")]
+        [RedirectLoggedUser]
         public IActionResult Register()
         {
             return View();
@@ -60,31 +67,35 @@ namespace CollegeGrades.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        [RedirectLoggedUser]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = new User
-            {
-                UserName = model.Email,
-                Email = model.Email
-            };
+            User user = _mapper.Map<RegisterViewModel, User>(model);
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
+            try
             {
-                AddErrors(result);
+                await _userService.RegisterAsync(user, model.Password);
+            }
+            catch (InvalidInputException ex)
+            {
+                ModelState.AddModelError(ex.Field, ex.Message);
                 return View(model);
             }
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            await SendConfirmationEmail(user);
+
+            return RedirectToAction(nameof(ConfirmationEmailSent));
+        }
+
+        private async Task SendConfirmationEmail(User user)
+        {
+            var code = await _userService.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
 
             await _emailSender.SendEmailConfirmationAsync(user.Email, callbackUrl);
-
-            return RedirectToAction(nameof(ConfirmationEmailSent));
         }
 
         #endregion Register
@@ -94,38 +105,32 @@ namespace CollegeGrades.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("login")]
-        public IActionResult LogIn(string returnUrl = null)
+        [RedirectLoggedUser]
+        public IActionResult LogIn()
         {
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("login")]
+        [RedirectLoggedUser]
         public async Task<IActionResult> LogIn(LogInViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-            if (result.Succeeded)
+            try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (!user.EmailConfirmed)
-                {
-                    ModelState.AddModelError("Email", "The email is not cofirmed.");
-                    return View(model);
-                }
-
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                await _userService.SignInAsync(model.Email, model.Password);
+            }
+            catch (InvalidInputException ex)
+            {
+                ModelState.AddModelError(ex.Field, ex.Message);
+                return View(model);
             }
 
-            ModelState.AddModelError("Email", "Invalid email and/or password.");
-            return View(model);
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         #endregion LogIn
@@ -135,7 +140,7 @@ namespace CollegeGrades.Controllers
         [HttpPost]
         public async Task<ActionResult> LogOut()
         {
-            await _signInManager.SignOutAsync();
+            await _userService.SignOutAsync();
 
             return RedirectToAction(nameof(LogIn));
         }
@@ -146,6 +151,7 @@ namespace CollegeGrades.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [RedirectLoggedUser]
         [Route("confirmation-email-sent")]
         public IActionResult ConfirmationEmailSent()
         {
@@ -154,25 +160,18 @@ namespace CollegeGrades.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [RedirectLoggedUser]
         [Route("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        public async Task<IActionResult> ConfirmEmail(string userID, string code)
         {
-            if (userId == null || code == null)
+            try
+            {
+                await _userService.ConfirmEmailAsync(userID, code);
+            }
+            catch (Exception)
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{userId}'.");
-            }
-
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-
-            if (!result.Succeeded)
-                return RedirectToAction(nameof(HomeController.Index), "Home");
 
             return View();
         }
@@ -183,6 +182,7 @@ namespace CollegeGrades.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [RedirectLoggedUser]
         [Route("reset-password")]
         public IActionResult ResetPassword()
         {
@@ -198,21 +198,17 @@ namespace CollegeGrades.Controllers
         [Route("profile")]
         public async Task<IActionResult> ViewProfile(string id = null)
         {
-            User user = null;
-            if(id == null)
-            {
-                user = await _userManager.GetUserAsync(HttpContext.User);
-            }
-            else
-            {
-                user = await _userManager.FindByIdAsync(id);
-            }
+            if (id == null)
+                id = User.GetUserId();
 
+            var user = await _userService.FindByIdAsync(id);
 
+            if (user == null)
+                return RedirectToAction(nameof(HomeController.Index), "Home");
 
-            return View();
-        } 
+            return View(_mapper.Map<User, DisplayUserViewModel>(user));
+        }
 
-        #endregion
+        #endregion Profile
     }
 }

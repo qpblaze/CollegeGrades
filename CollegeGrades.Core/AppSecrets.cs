@@ -1,16 +1,18 @@
-﻿namespace CollegeGrades.Data
+﻿namespace CollegeGrades.Core
 {
     /// <summary>
     /// SendGrid api secrets
     /// https://sendgrid.com/
     /// </summary>
-    public class SendGridSecrets
+    public class SendGrid
     {
         public string ApiKey { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; }
     }
 
     public class AppSecrets
     {
-        public SendGridSecrets SendGrid { get; set; }
+        public SendGrid SendGrid { get; set; }
     }
 }
