@@ -28,9 +28,9 @@ namespace CollegeGrades.Infrastructure.Services.Messaging
             client.Authenticator = new HttpBasicAuthenticator("api", API_KEY);
 
             RestRequest request = new RestRequest();
-            request.AddParameter("domain", "sandbox89776fd384bf4d49a14f05162f672bf4.mailgun.org", ParameterType.UrlSegment);
+            request.AddParameter("domain", EMAIL, ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
-            request.AddParameter("from", "Excited User <mailgun@sandbox89776fd384bf4d49a14f05162f672bf4.mailgun.org>");
+            request.AddParameter("from", "Excited User <"+EMAIL+">");
             request.AddParameter("to", email);
             request.AddParameter("subject", subject);
             request.AddParameter("text", message);
