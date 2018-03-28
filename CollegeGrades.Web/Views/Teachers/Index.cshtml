@@ -1,0 +1,59 @@
+﻿@model IEnumerable<CollegeGrades.Core.Entities.Teacher>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+
+    <a class="btn btn-success btn-lg" asp-action="Create">
+        <i class="material-icons">add</i>&nbsp; NEW TEACHER
+        <div class="ripple-container"></div>
+    </a>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header" data-background-color="blue">
+                    <h4 class="title">Teachers List</h4>
+                    <p class="category">Here you can see a list with all teachers</p>
+                </div>
+                <div class="card-content table-responsive">
+                    <table class="table">
+                        <thead class="text-info">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Link</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Link)</td>
+                                    <td class="td-actions text-center">
+                                        <a class="btn btn-info btn-just-icon btn-sm" asp-action="Details" asp-route-id="@item.ID" >
+                                            <i class="material-icons">info_outline</i>
+                                        </a>
+                                        <a  class="btn btn-success btn-just-icon btn-sm" asp-action="Edit" asp-route-id="@item.ID" >
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                        <a class="btn btn-danger btn-just-icon btn-sm" asp-action="Delete" asp-route-id="@item.ID" >
+                                            <i class="material-icons">close</i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

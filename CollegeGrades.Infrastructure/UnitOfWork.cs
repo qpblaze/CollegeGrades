@@ -6,33 +6,24 @@ namespace CollegeGrades.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
-       // public IAccountService Accounts => throw new System.NotImplementedException();
+        private readonly ApplicationDbContext _context;
 
-        public Task CompletedAsync()
+        public IUserService Users { get; set; }
+        public ITeacherRepository Teachers { get; set; }
+
+        public UnitOfWork(
+            ApplicationDbContext context,
+            IUserService userService,
+            ITeacherRepository teacherRepository)
         {
-            throw new System.NotImplementedException();
+            _context = context;
+            Users = userService;
+            Teachers = teacherRepository;
         }
 
-        public void Dispose()
+        public async Task CompletedAsync()
         {
-            throw new System.NotImplementedException();
+            await _context.SaveChangesAsync();
         }
-
-        //private readonly ApplicationDbContext _context;
-
-
-
-        //public UnitOfWork(ApplicationDbContext context)
-        //{
-        //    _context = context;
-
-        //    Accounts = new AccountService(_context);
-        //}
-
-        //public async Task CompletedAsync()
-        //{
-        //    await _context.SaveChangesAsync();
-        //}
-
     }
 }

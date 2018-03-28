@@ -2,6 +2,7 @@
 using CollegeGrades.Core;
 using CollegeGrades.Core.Entities;
 using CollegeGrades.Core.Interfaces;
+using CollegeGrades.Infrastructure;
 using CollegeGrades.Infrastructure.Data;
 using CollegeGrades.Infrastructure.Identity;
 using CollegeGrades.Infrastructure.Repository;
@@ -67,9 +68,11 @@ namespace CollegeGrades
 
             services.AddAutoMapper();
 
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMvc(options =>
             {
@@ -86,6 +89,15 @@ namespace CollegeGrades
                 app.UseDeveloperExceptionPage();
             }
 
+            IncreaseSecurity(app);
+
+            app.UseStaticFiles();
+            app.UseAuthentication();
+            app.UseMvcWithDefaultRoute();
+        }
+
+        public void IncreaseSecurity(IApplicationBuilder app)
+        {
             // For better security
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -100,10 +112,6 @@ namespace CollegeGrades
 
             // Prevents attacks with different content type
             app.UseXContentTypeOptions();
-
-            app.UseStaticFiles();
-            app.UseAuthentication();
-            app.UseMvcWithDefaultRoute();
         }
     }
 }

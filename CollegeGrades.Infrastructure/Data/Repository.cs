@@ -1,13 +1,12 @@
 ﻿using CollegeGrades.Core.Interfaces;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CollegeGrades.Infrastructure.Data
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : IRepository<TEntity>, IRepositoryAsync<TEntity> where TEntity : class
     {
         protected readonly ApplicationDbContext _context;
 
@@ -16,39 +15,99 @@ namespace CollegeGrades.Infrastructure.Data
             _context = context;
         }
 
-        public async Task<TEntity> GetAsync(string id)
+        public virtual TEntity GetById(string id)
+        {
+            return _context.Set<TEntity>().Find(id);
+        }
+
+        public TEntity GetSingleBySpec(ISpecification<TEntity> spec)
+        {
+            return List(spec).FirstOrDefault();
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(string id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public IQueryable<TEntity> GetAll()
+        public IEnumerable<TEntity> ListAll()
         {
-            return _context.Set<TEntity>();
+            return _context.Set<TEntity>().AsEnumerable();
         }
 
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        public async Task<List<TEntity>> ListAllAsync()
         {
-            return _context.Set<TEntity>().Where(predicate);
+            return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task AddAsync(TEntity entity)
+        public IEnumerable<TEntity> List(ISpecification<TEntity> spec)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
+            // fetch a Queryable that includes all expression-based includes
+            var queryableResultWithIncludes = spec.Includes
+                .Aggregate(_context.Set<TEntity>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            // modify the IQueryable to include any string-based include statements
+            var secondaryResult = spec.IncludeStrings
+                .Aggregate(queryableResultWithIncludes,
+                    (current, include) => current.Include(include));
+
+            // return the result of the query using the specification's criteria expression
+            return secondaryResult
+                            .Where(spec.Criteria)
+                            .AsEnumerable();
         }
 
-        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public async Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec)
         {
-            await _context.Set<TEntity>().AddRangeAsync(entities);
+            // fetch a Queryable that includes all expression-based includes
+            var queryableResultWithIncludes = spec.Includes
+                .Aggregate(_context.Set<TEntity>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            // modify the IQueryable to include any string-based include statements
+            var secondaryResult = spec.IncludeStrings
+                .Aggregate(queryableResultWithIncludes,
+                    (current, include) => current.Include(include));
+
+            // return the result of the query using the specification's criteria expression
+            return await secondaryResult
+                            .Where(spec.Criteria)
+                            .ToListAsync();
         }
 
-        public void Remove(TEntity entity)
+        public TEntity Add(TEntity entity)
+        {
+            _context.Set<TEntity>().Add(entity);
+
+            return entity;
+        }
+
+        public async Task<TEntity> AddAsync(TEntity entity)
+        {
+            _context.Set<TEntity>().Add(entity);
+
+            return entity;
+        }
+
+        public void Update(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<TEntity> entities)
+        public async Task DeleteAsync(TEntity entity)
         {
-            _context.Set<TEntity>().RemoveRange(entities);
+            _context.Set<TEntity>().Remove(entity);
         }
     }
 }

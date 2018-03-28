@@ -63,7 +63,8 @@ namespace CollegeGrades.Infrastructure.Services
             var result = await _userManager.CreateAsync(user, user.Password);
             if (!result.Succeeded)
             {
-                throw new InvalidInputException(result.Errors.ToString());
+                foreach(var error in result.Errors)
+                    throw new InvalidInputException(error.Description);
             }
 
             await AddToRoleAsync(user, "Student");
@@ -71,15 +72,23 @@ namespace CollegeGrades.Infrastructure.Services
 
         public async Task SignInAsync(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
-
-            if (!result.Succeeded)
-                throw new InvalidInputException("Email", "Invalid email and/or password.");
-
             var user = await _userManager.FindByEmailAsync(email);
+
+            if(user == null)
+            {
+                throw new InvalidInputException("Email", "Invalid email and/or password.");
+            }
+
             if (!user.EmailConfirmed)
             {
                 throw new InvalidInputException("Email", "The email is not cofirmed.");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidInputException("Email", "Invalid email and/or password.");
             }
         }
 

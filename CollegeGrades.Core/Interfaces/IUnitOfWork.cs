@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace CollegeGrades.Core.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
-        //IAccountService Accounts { get; }
+        IUserService Users { get; }
+        ITeacherRepository Teachers { get; }
 
         Task CompletedAsync();
     }

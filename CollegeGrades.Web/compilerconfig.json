@@ -6,5 +6,9 @@
   {
     "outputFile": "wwwroot/lib/material-kit-master/assets/scss/material-kit.css",
     "inputFile": "wwwroot/lib/material-kit-master/assets/scss/material-kit.scss"
+  },
+  {
+    "outputFile": "wwwroot/lib/material-dashboard/sass/material-dashboard.css",
+    "inputFile": "wwwroot/lib/material-dashboard/sass/material-dashboard.scss"
   }
 ]

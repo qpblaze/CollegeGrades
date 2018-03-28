@@ -17,7 +17,7 @@ namespace CollegeGrades.Web.Controllers
     {
         #region Private Properties
 
-        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
 
@@ -26,11 +26,11 @@ namespace CollegeGrades.Web.Controllers
         #region Constructor
 
         public AccountController(
-            IUserService userService,
+            IUnitOfWork unitOfWork,
             IEmailSender emailSender,
             IMapper mapper)
         {
-            _userService = userService;
+            _unitOfWork = unitOfWork;
             _emailSender = emailSender;
             _mapper = mapper;
         }
@@ -45,6 +45,8 @@ namespace CollegeGrades.Web.Controllers
         [RedirectLoggedUser]
         public IActionResult Register()
         {
+            
+
             return View();
         }
 
@@ -58,7 +60,7 @@ namespace CollegeGrades.Web.Controllers
 
             try
             {
-                await _userService.CreateAsync(user);
+                await _unitOfWork.Users.CreateAsync(user);
             }
             catch (InvalidInputException ex)
             {
@@ -81,7 +83,7 @@ namespace CollegeGrades.Web.Controllers
 
         private async Task SendConfirmationEmail(User user)
         {
-            var code = await _userService.GenerateEmailConfirmationTokenAsync(user);
+            var code = await _unitOfWork.Users.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
 
             await _emailSender.SendEmailConfirmationAsync(user.Email, callbackUrl);
@@ -108,7 +110,7 @@ namespace CollegeGrades.Web.Controllers
         {
             try
             {
-                await _userService.SignInAsync(model.Email, model.Password);
+                await _unitOfWork.Users.SignInAsync(model.Email, model.Password);
             }
             catch (InvalidInputException ex)
             {
@@ -126,7 +128,7 @@ namespace CollegeGrades.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> LogOut()
         {
-            await _userService.SignOutAsync();
+            await _unitOfWork.Users.SignOutAsync();
 
             return RedirectToAction(nameof(LogIn));
         }
@@ -152,7 +154,7 @@ namespace CollegeGrades.Web.Controllers
         {
             try
             {
-                await _userService.ConfirmEmailAsync(userID, code);
+                await _unitOfWork.Users.ConfirmEmailAsync(userID, code);
             }
             catch (Exception)
             {
@@ -187,7 +189,7 @@ namespace CollegeGrades.Web.Controllers
             if (id == null)
                 id = User.GetUserId();
 
-            var user = await _userService.FindByIdAsync(id);
+            var user = await _unitOfWork.Users.FindByIdAsync(id);
 
             if (user == null)
                 return RedirectToAction(nameof(HomeController.Index), "Home");

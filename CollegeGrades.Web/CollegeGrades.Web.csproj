@@ -42,6 +42,53 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\lib\material-dashboard\js\arrive.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\bootstrap-notify.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\chartist.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\demo.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\jquery-3.2.1.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\material-dashboard.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\material.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\js\perfect-scrollbar.jquery.min.js" />
+    <None Include="wwwroot\lib\material-dashboard\sass\material-dashboard.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\mixins\_chartist.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\mixins\_transparency.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\mixins\_vendor-prefixes.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\plugins\_animate.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\plugins\_perfect-scrollbar.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\plugins\_plugin-nouislider.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_alerts.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_buttons.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_cards.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_chartist.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_checkboxes.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_colors.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_dialogs.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_dropdown.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_footers.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_forms.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_inputs-size.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_inputs.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_misc.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_mixins.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_navbars.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_pagination.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_pills.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_popups.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_radios.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_responsive.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_ripples.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_shadows.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_sidebar-and-main-panel.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_tables.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_tabs.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_togglebutton.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_typography.scss" />
+    <None Include="wwwroot\lib\material-dashboard\sass\md\_variables.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CollegeGrades.Infrastructure\CollegeGrades.Infrastructure.csproj" />
   </ItemGroup>
 

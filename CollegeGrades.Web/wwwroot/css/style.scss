@@ -32,8 +32,16 @@ body {
     text-transform: uppercase;
 }
 
-.title, 
+.title,
 .title a {
     color: #3c4858;
     text-decoration: none;
+}
+
+.btn-just-icon {
+    margin-right: 10px !important;
+}
+
+.content {
+    margin-top: 0!important;
 }
